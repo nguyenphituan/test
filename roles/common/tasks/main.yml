@@ -1,0 +1,21 @@
+---
+- name: Create user
+  user:    
+    name: "{{USERNAME}}"
+    password: "{{PASSWORD}}"
+    createhome: true
+- name: Change user group
+  user:
+    name: "{{USERNAME}}"
+    group: sudo
+  when: SUDO == true
+- name: Create .ssh folder
+  file:
+    path: "/home/{{USERNAME}}/.ssh"
+    state: directory
+    recurse: yes
+- name: Get public key
+  set_fact:
+    Public_key: "{{lookup('file','../files/authorized_keys')}}"
+- name: Append public key into user's home directory
+  shell: "echo {{Public_key}} >> /home/{{USERNAME}}/.ssh/authorized_keys"
