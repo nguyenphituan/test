@@ -2,8 +2,11 @@
 - name: Create user
   user:    
     name: "{{USERNAME}}"
-    password: "{{PASSWORD}}"
+    # Password needed to be hashed before writing into /etc/shadow
+    password: "{{PASSWORD | password_hash('sha512') }}"
+    shell: /bin/bash
     createhome: true
+    
 - name: Change user group
   user:
     name: "{{USERNAME}}"
